@@ -78,11 +78,13 @@ def train(opt):
             # Load model
             checkpoint = torch.load(opt.resume)
         start_epoch = checkpoint['epoch'] + 1
+    else:
+        start_epoch = 0  #sets the starting epoch
         
     model = EfficientDet(num_classes=training_set.num_classes())
 
     if (opt.resume is not None):
-        model.load_state_dict(checkpoint['state_dict'])
+        model.load_state_dict(checkpoint['state_dict'])  #load the model using the checkpoint's state_dict
 
     if os.path.isdir(opt.log_path):
         shutil.rmtree(opt.log_path)
@@ -94,15 +96,14 @@ def train(opt):
     writer = SummaryWriter(opt.log_path)
     if torch.cuda.is_available():
         model = model.cuda()
-        model = nn.DataParallel(model)
+        model = nn.DataParallel(model)  #wrap with dataparallel
 
     optimizer = torch.optim.Adam(model.parameters(), opt.lr)
     scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, patience=3, verbose=True)
 
     best_loss = 1e5
     best_epoch = 0
-    model.train()
-    start_epoch = 0
+    model.train()   #puts model in training mode
 
     num_iter_per_epoch = len(training_generator)
     for epoch in range(start_epoch, opt.num_epochs):
@@ -181,7 +182,7 @@ def train(opt):
                         'epoch': epoch,
                         'state_dict': model.module.state_dict()
                 }
-                torch.save(state, os.path.join(opt.saved_path, "signatrix_efficientdet_coco.pth"))
+                torch.save(state, os.path.join(opt.saved_path, "edet_{}.pth".format(epoch)))
 
                 dummy_input = torch.rand(opt.batch_size, 3, 512, 512)
                 if torch.cuda.is_available():
