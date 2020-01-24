@@ -1,3 +1,11 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Thu Jan 23 17:42:27 2020
+
+@author: craig
+"""
+
 import os
 import argparse
 import torch
@@ -15,6 +23,7 @@ from tqdm.autonotebook import tqdm
 def get_args():
     parser = argparse.ArgumentParser(
         "EfficientDet: Scalable and Efficient Object Detection implementation by Signatrix GmbH")
+    parser.add_argument("--resume", type=str, help="Path to checkpoint to resume training")
     parser.add_argument("--image_size", type=int, default=512, help="The common width and height for all images")
     parser.add_argument("--batch_size", type=int, default=8, help="The number of images per batch")
     parser.add_argument("--lr", type=float, default=1e-4)
@@ -61,9 +70,19 @@ def train(opt):
     test_set = CocoDataset(root_dir=opt.data_path, set="val2017",
                            transform=transforms.Compose([Normalizer(), Resizer()]))
     test_generator = DataLoader(test_set, **test_params)
-
+    
+    #load model to resume training from checkpoint
+    if(opt.resume is not None):
+        if os.path.isfile(opt.resume):
+            print("=> loading checkpoint '{}'".format(opt.resume))
+            # Load model
+            checkpoint = torch.load(opt.resume)
+        start_epoch = checkpoint['epoch'] + 1
+        
     model = EfficientDet(num_classes=training_set.num_classes())
 
+    if (opt.resume is not None):
+        model.load_state_dict(checkpoint['state_dict'])
 
     if os.path.isdir(opt.log_path):
         shutil.rmtree(opt.log_path)
@@ -83,9 +102,10 @@ def train(opt):
     best_loss = 1e5
     best_epoch = 0
     model.train()
+    start_epoch = 0
 
     num_iter_per_epoch = len(training_generator)
-    for epoch in range(opt.num_epochs):
+    for epoch in range(start_epoch, opt.num_epochs):
         model.train()
         # if torch.cuda.is_available():
         #     model.module.freeze_bn()
@@ -157,7 +177,11 @@ def train(opt):
             if loss + opt.es_min_delta < best_loss:
                 best_loss = loss
                 best_epoch = epoch
-                torch.save(model, os.path.join(opt.saved_path, "signatrix_efficientdet_coco.pth"))
+                state = {
+                        'epoch': epoch,
+                        'state_dict': model.module.state_dict()
+                }
+                torch.save(state, os.path.join(opt.saved_path, "signatrix_efficientdet_coco.pth"))
 
                 dummy_input = torch.rand(opt.batch_size, 3, 512, 512)
                 if torch.cuda.is_available():
