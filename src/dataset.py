@@ -96,7 +96,7 @@ class CocoDataset(Dataset):
         return self.coco_labels[label]
 
     def num_classes(self):
-        return 80
+        return 1                ######I changed
 
 
 def collater(data):
