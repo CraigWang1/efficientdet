@@ -177,14 +177,16 @@ def train(opt):
             writer.add_scalar('Test/Regression_loss', reg_loss, epoch)
             writer.add_scalar('Test/Classfication_loss (focal loss)', cls_loss, epoch)
 
+            #save model
+            state = {
+                    'epoch': epoch,
+                    'state_dict': model.module.state_dict()
+            }
+            torch.save(state, os.path.join(opt.saved_path, "edet_{}.pth".format(epoch)))
+            
             if loss + opt.es_min_delta < best_loss:
                 best_loss = loss
                 best_epoch = epoch
-                state = {
-                        'epoch': epoch,
-                        'state_dict': model.module.state_dict()
-                }
-                torch.save(state, os.path.join(opt.saved_path, "edet_{}.pth".format(epoch)))
 
                 dummy_input = torch.rand(opt.batch_size, 3, 512, 512)
                 if torch.cuda.is_available():
