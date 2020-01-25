@@ -72,18 +72,20 @@ def train(opt):
     test_generator = DataLoader(test_set, **test_params)
     
     #load model to resume training from checkpoint
-    if(opt.resume is not None):
+    #if resume checkpoint is specified
+    if opt.resume:
         if os.path.isfile(opt.resume):
             print("=> loading checkpoint '{}'".format(opt.resume))
             # Load model
             checkpoint = torch.load(opt.resume)
         start_epoch = checkpoint['epoch'] + 1
     else:
-        start_epoch = 0  #sets the starting epoch
+        start_epoch = 1  #otherwise if training from scratch, sets the starting epoch to 1
         
     model = EfficientDet(num_classes=training_set.num_classes())
 
-    if (opt.resume is not None):
+    #load checkpoint model if resume is specified
+    if opt.resume:
         model.load_state_dict(checkpoint['state_dict'])  #load the model using the checkpoint's state_dict
 
     if os.path.isdir(opt.log_path):
@@ -106,7 +108,7 @@ def train(opt):
     model.train()   #puts model in training mode
 
     num_iter_per_epoch = len(training_generator)
-    for epoch in range(start_epoch, opt.num_epochs):
+    for epoch in range(start_epoch, opt.num_epochs + 1):  #for each epoch
         model.train()
         # if torch.cuda.is_available():
         #     model.module.freeze_bn()
@@ -135,7 +137,7 @@ def train(opt):
 
                 progress_bar.set_description(
                     'Epoch: {}/{}. Iteration: {}/{}. Cls loss: {:.5f}. Reg loss: {:.5f}. Batch loss: {:.5f} Total loss: {:.5f}'.format(
-                        epoch + 1, opt.num_epochs, iter + 1, num_iter_per_epoch, cls_loss, reg_loss, loss,
+                        epoch, opt.num_epochs, iter + 1, num_iter_per_epoch, cls_loss, reg_loss, loss,
                         total_loss))
                 writer.add_scalar('Train/Total_loss', total_loss, epoch * num_iter_per_epoch + iter)
                 writer.add_scalar('Train/Regression_loss', reg_loss, epoch * num_iter_per_epoch + iter)
@@ -169,7 +171,7 @@ def train(opt):
 
             print(
                 'Epoch: {}/{}. Classification loss: {:1.5f}. Regression loss: {:1.5f}. Total loss: {:1.5f}'.format(
-                    epoch + 1, opt.num_epochs, cls_loss, reg_loss,
+                    epoch, opt.num_epochs, cls_loss, reg_loss,
                     np.mean(loss)))
             writer.add_scalar('Test/Total_loss', loss, epoch)
             writer.add_scalar('Test/Regression_loss', reg_loss, epoch)
