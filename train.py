@@ -64,11 +64,11 @@ def train(opt):
                    "num_workers": 12}
 
     training_set = CocoDataset(root_dir=opt.data_path, set="train2017",
-                               transform=transforms.Compose([Normalizer(), Augmenter(), Resizer()]))
+                               transform=transforms.Compose([Normalizer(), Augmenter(), Resizer(common_size=opt.image_size)]))
     training_generator = DataLoader(training_set, **training_params)
 
     test_set = CocoDataset(root_dir=opt.data_path, set="val2017",
-                           transform=transforms.Compose([Normalizer(), Resizer()]))
+                           transform=transforms.Compose([Normalizer(), Resizer(common_size=opt.image_size)]))
     test_generator = DataLoader(test_set, **test_params)
     
     #load model to resume training from checkpoint
