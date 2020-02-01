@@ -1,9 +1,30 @@
 from src.dataset import CocoDataset, Resizer, Normalizer
 from torchvision import transforms
 from pycocotools.cocoeval import COCOeval
+from src.model import EfficientDet
 import json
 import torch
+import argparse
 
+parser = argparse.ArgumentParser(description="Rename images in directories to integers.")
+parser.add_argument(
+    "--model",
+    help="Path to trained model.",
+    type=str,
+)
+parser.add_argument(
+    "--dataset",
+    help="Directory to COCO dataset.",
+    type=str,
+)
+parser.add_argument(
+    "--num_classes",
+    help="Number of classes in dataset.",
+    default=1
+    type=int,
+)
+
+args = parser.parse_args()
 
 def evaluate_coco(dataset, model, threshold=0.05):
     model.eval()
@@ -64,8 +85,12 @@ def evaluate_coco(dataset, model, threshold=0.05):
 
 
 if __name__ == '__main__':
-    efficientdet = torch.load("trained_models/signatrix_efficientdet_coco.pth").module
+    #load model
+    checkpoint = torch.load(args.model)
+    efficientdet = EfficientDet(num_classes=args.num_classes)
+    efficientdet.load_state_dict(checkpoint['state dict'])
     efficientdet.cuda()
-    dataset_val = CocoDataset("data/COCO", set='val2017',
+
+    dataset_val = CocoDataset(args.dataset, set='val2017',
                               transform=transforms.Compose([Normalizer(), Resizer()]))
     evaluate_coco(dataset_val, efficientdet)
