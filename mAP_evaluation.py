@@ -20,7 +20,7 @@ parser.add_argument(
 parser.add_argument(
     "--num_classes",
     help="Number of classes in dataset.",
-    default=1
+    default=1,
     type=int
 )
 
