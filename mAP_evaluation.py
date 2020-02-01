@@ -88,7 +88,7 @@ if __name__ == '__main__':
     #load model
     checkpoint = torch.load(args.model)
     efficientdet = EfficientDet(num_classes=args.num_classes)
-    efficientdet.load_state_dict(checkpoint['state dict'])
+    efficientdet.load_state_dict(checkpoint['state_dict'])
     efficientdet.cuda()
 
     dataset_val = CocoDataset(args.dataset, set='val2017',
