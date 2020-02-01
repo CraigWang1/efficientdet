@@ -10,18 +10,18 @@ parser = argparse.ArgumentParser(description="Rename images in directories to in
 parser.add_argument(
     "--model",
     help="Path to trained model.",
-    type=str,
+    type=str
 )
 parser.add_argument(
     "--dataset",
     help="Directory to COCO dataset.",
-    type=str,
+    type=str
 )
 parser.add_argument(
     "--num_classes",
     help="Number of classes in dataset.",
     default=1
-    type=int,
+    type=int
 )
 
 args = parser.parse_args()
