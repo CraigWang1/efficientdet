@@ -55,13 +55,13 @@ def train(opt):
                        "shuffle": True,
                        "drop_last": True,
                        "collate_fn": collater,
-                       "num_workers": 2}  ####################I CHANGED FOR TESTING  (original was 12)
+                       "num_workers": 12}  ####################I CHANGED FOR TESTING  (original was 12)
 
     test_params = {"batch_size": opt.batch_size,
                    "shuffle": False,
                    "drop_last": False,
                    "collate_fn": collater,
-                   "num_workers": 2}       ####################I CHANGED TO 0 FOR TESTING (original was 12)
+                   "num_workers": 12}       ####################I CHANGED TO 0 FOR TESTING (original was 12)
 
     training_set = CocoDataset(root_dir=opt.data_path, set="train2017",
                                transform=transforms.Compose([Normalizer(), Augmenter(), Resizer()]))
