@@ -194,16 +194,16 @@ def train(opt):
                 if isinstance(model, nn.DataParallel):
                     model.module.backbone_net.model.set_swish(memory_efficient=False)
 
-                    torch.onnx.export(model.module, dummy_input,
-                                      os.path.join(opt.saved_path, "signatrix_efficientdet_coco.onnx"),
-                                      verbose=False)
+#                     torch.onnx.export(model.module, dummy_input,
+#                                       os.path.join(opt.saved_path, "signatrix_efficientdet_coco.onnx"),
+#                                       verbose=False)
                     model.module.backbone_net.model.set_swish(memory_efficient=True)
                 else:
                     model.backbone_net.model.set_swish(memory_efficient=False)
 
-                    torch.onnx.export(model, dummy_input,
-                                      os.path.join(opt.saved_path, "signatrix_efficientdet_coco.onnx"),
-                                      verbose=False)
+#                     torch.onnx.export(model, dummy_input,
+#                                       os.path.join(opt.saved_path, "signatrix_efficientdet_coco.onnx"),
+#                                       verbose=False)
                     model.backbone_net.model.set_swish(memory_efficient=True)
 
             # Early stopping
