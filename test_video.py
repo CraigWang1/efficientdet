@@ -23,7 +23,7 @@ def get_args():
 def test(opt):
     #load model
     checkpoint = torch.load(opt.pretrained_model)
-    model = EfficientDet(num_classes=1)  #initialize model
+    model = EfficientDet(num_classes=opt.num_classes)  #initialize model
     model.load_state_dict(checkpoint['state_dict'])  #load state_dict
 
     if torch.cuda.is_available():
