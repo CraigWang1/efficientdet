@@ -26,7 +26,7 @@ def test(opt):
     model.load_state_dict(checkpoint['state_dict'])  #load state_dict
 
     if torch.cuda.is_available():
-    model.cuda()
+        model.cuda()
 
     cap = cv2.VideoCapture(opt.input)
     out = cv2.VideoWriter(opt.output,  cv2.VideoWriter_fourcc(*"MJPG"), int(cap.get(cv2.CAP_PROP_FPS)),
