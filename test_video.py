@@ -9,6 +9,7 @@ def get_args():
     parser = argparse.ArgumentParser(
         "EfficientDet: Scalable and Efficient Object Detection implementation by Signatrix GmbH")
     parser.add_argument("--image_size", type=int, default=512, help="The common width and height for all images")
+    parser.add_argument("--num_classes", type=int, default=80, help="The number of classes that the model can predict")
     parser.add_argument("--cls_threshold", type=float, default=0.5)
     parser.add_argument("--nms_threshold", type=float, default=0.5)
     parser.add_argument("--pretrained_model", type=str, default="trained_models/signatrix_efficientdet_coco.pth")
@@ -21,7 +22,7 @@ def get_args():
 
 def test(opt):
     #load model
-    checkpoint = torch.load(pretrained_model)
+    checkpoint = torch.load(opt.pretrained_model)
     model = EfficientDet(num_classes=1)  #initialize model
     model.load_state_dict(checkpoint['state_dict'])  #load state_dict
 
