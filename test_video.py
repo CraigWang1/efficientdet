@@ -1,6 +1,7 @@
 import argparse
 import torch
 from src.config import COCO_CLASSES, colors
+from src.model import EfficientDet
 import cv2
 import numpy as np
 
