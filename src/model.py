@@ -198,7 +198,7 @@ class EfficientNet(nn.Module):
 
 
 class EfficientDet(nn.Module):
-    def __init__(self, num_anchors=9, num_classes=20, compound_coef=0):
+    def __init__(self, num_anchors=9, num_classes=20, compound_coef=1):    ########CHANGED COMPOUND_COEF FROM 0 TO 1
         super(EfficientDet, self).__init__()
         self.compound_coef = compound_coef
 
