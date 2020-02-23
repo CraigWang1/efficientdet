@@ -82,9 +82,10 @@ def train(opt):
 #         start_epoch = checkpoint['epoch'] + 1
 #     else:
 #         start_epoch = 1  #otherwise if training from scratch, sets the starting epoch to 1
-    if opt.resume:
+    #create models
+    if opt.resume:   #load pretrained model if provided and resumes
         model = torch.load(opt.resume).module
-    else:
+    else:            #otherwise create fresh one
         model = EfficientDet(num_classes=training_set.num_classes())
 
     #load checkpoint model if resume is specified
