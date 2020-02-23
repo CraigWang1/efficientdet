@@ -24,6 +24,7 @@ def get_args():
     parser = argparse.ArgumentParser(
         "EfficientDet: Scalable and Efficient Object Detection implementation by Signatrix GmbH")
     parser.add_argument("--resume", type=str, help="Path to checkpoint to resume training")
+    parser.add_argument("--start_epoch", type=int, default=1, help="Starting epoch number to display")
     parser.add_argument("--image_size", type=int, default=512, help="The common width and height for all images")
     parser.add_argument("--batch_size", type=int, default=8, help="The number of images per batch")
     parser.add_argument("--lr", type=float, default=1e-4)
@@ -73,16 +74,18 @@ def train(opt):
     
     #load model to resume training from checkpoint
     #if resume checkpoint is specified
+#     if opt.resume:
+#         if os.path.isfile(opt.resume):
+#             print("=> loading checkpoint '{}'".format(opt.resume))
+#             # Load model
+#             checkpoint = torch.load(opt.resume)
+#         start_epoch = checkpoint['epoch'] + 1
+#     else:
+#         start_epoch = 1  #otherwise if training from scratch, sets the starting epoch to 1
     if opt.resume:
-        if os.path.isfile(opt.resume):
-            print("=> loading checkpoint '{}'".format(opt.resume))
-            # Load model
-            checkpoint = torch.load(opt.resume)
-        start_epoch = checkpoint['epoch'] + 1
+        model = torch.load(opt.resume).module
     else:
-        start_epoch = 1  #otherwise if training from scratch, sets the starting epoch to 1
-        
-    model = EfficientDet(num_classes=training_set.num_classes())
+        model = EfficientDet(num_classes=training_set.num_classes())
 
     #load checkpoint model if resume is specified
     if opt.resume:
