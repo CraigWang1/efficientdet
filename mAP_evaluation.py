@@ -86,9 +86,7 @@ def evaluate_coco(dataset, model, threshold=0.05):
 
 if __name__ == '__main__':
     #load model
-    checkpoint = torch.load(args.model)
-    efficientdet = EfficientDet(num_classes=args.num_classes)
-    efficientdet.load_state_dict(checkpoint['state_dict'])
+    efficientdet = torch.load(args.model).module
     efficientdet.cuda()
 
     dataset_val = CocoDataset(args.dataset, set='val2017',
