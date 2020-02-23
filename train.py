@@ -112,7 +112,7 @@ def train(opt):
     model.train()   #puts model in training mode
 
     num_iter_per_epoch = len(training_generator)
-    for epoch in range(start_epoch, opt.num_epochs + 1):  #for each epoch
+    for epoch in range(opt.start_epoch, opt.num_epochs + 1):  #for each epoch
         model.train()
         # if torch.cuda.is_available():
         #     model.module.freeze_bn()
@@ -182,11 +182,7 @@ def train(opt):
             writer.add_scalar('Test/Classfication_loss (focal loss)', cls_loss, epoch)
 
             #save model
-            state = {
-                    'epoch': epoch,
-                    'state_dict': model.module.state_dict()
-            }
-            torch.save(state, os.path.join(opt.saved_path, "edet_{}.pth".format(epoch)))
+            torch.save(model, os.path.join(opt.saved_path, "edet_{}.pth".format(epoch)))
             
             if loss + opt.es_min_delta < best_loss:
                 best_loss = loss
