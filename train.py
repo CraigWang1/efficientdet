@@ -88,10 +88,6 @@ def train(opt):
     else:            #otherwise create fresh one
         model = EfficientDet(num_classes=training_set.num_classes())
 
-    #load checkpoint model if resume is specified
-    if opt.resume:
-        model.load_state_dict(checkpoint['state_dict'])  #load the model using the checkpoint's state_dict
-
     if os.path.isdir(opt.log_path):
         shutil.rmtree(opt.log_path)
     os.makedirs(opt.log_path)
