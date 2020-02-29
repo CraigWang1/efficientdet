@@ -70,7 +70,7 @@ def test(opt):
     for box_id in range(boxes.shape[0]):
         pred_prob = float(scores[box_id])
         if pred_prob < opt.cls_threshold:
-            break
+            continue
         pred_label = int(labels[box_id])
         xmin, ymin, xmax, ymax = boxes[box_id, :]
         color = colors[pred_label]
