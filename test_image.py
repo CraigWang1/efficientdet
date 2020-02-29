@@ -65,7 +65,7 @@ def test(opt):
         scores, labels, boxes = model(new_image)
         boxes /= scale
     if boxes.shape[0] == 0:  
-        print("No detections above threshold.")
+        print("Nothing detected.")
         
     for box_id in range(boxes.shape[0]):
         pred_prob = float(scores[box_id])
